@@ -1,16 +1,19 @@
 function plot_eigpairs(u, e, u_PLOTS, e_PLOTS)
     if (u_PLOTS)
-        figure(1);
+        figure();
         plot(cumsum(u)/sum(u));
+        title('Truncation level quality')
         
-        figure(2);
-        norm_u = u/max(u);
-        plot(log(norm_u));
+        figure();
+        norm_u = u/u(1);
+        semilogy(norm_u);
+        title('Normed eigenvalues')
     end
     
     if (e_PLOTS)
-        figure(3);
+        figure();
         plot(e); 
+        title('Eigenvectors')
     end
 
 end

@@ -1,10 +1,6 @@
-function [U, N] = generate_legendre_samples(grid_h, N_p, N)
+function U = generate_legendre_samples(N_p, N, grid_h)
 
-    if ~grid_h && ~exist('N', 'var')
-        U = 0; return
-    end
-
-    if (grid_h)
+    if exist('grid_h', 'var')
 
         grids = cell(1, N_p);    
         
@@ -18,11 +14,6 @@ function [U, N] = generate_legendre_samples(grid_h, N_p, N)
         end
 
     else
-
-        if ~exist('N', 'var')
-            N = 0;
-        end
-
         U = 2*rand(N, N_p) - 1;
     end
 

@@ -4,7 +4,7 @@ function G = calculate_sensitivity_indices(basis_index, coefficients, type)
 
     norm = PCE_methods.get_multivariate_basis_norm(basis_index);
 
-    c2_norm = sum(coefficients .* coefficients .* norm, 2);
+    c2_norm = sum(coefficients .* coefficients .* norm .* norm, 2);
 
     tot = sum(c2_norm);
 
@@ -18,7 +18,8 @@ function G = calculate_sensitivity_indices(basis_index, coefficients, type)
             filt = sum(basis_index, 2) == basis_index(:, k);
         end
 
-        c2_norm_p = c2_norm(filt);        
+        c2_norm_p = c2_norm(filt);
+%         num = sum(c2_norm_p);
         G(k) = sum(c2_norm_p)/tot;
     end
 end

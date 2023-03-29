@@ -1,7 +1,8 @@
-function I = generate_inputs(ranges, means, legendre_samples)
+function I = generate_model_inputs(ranges, means, legendre_samples)
 
     [N, N_p] = size(legendre_samples);
-    assert(numel(ranges) == numel(means) && numel(means) == N_p);
+    assert(numel(ranges) == numel(means));
+    assert(numel(means) == N_p);
 
     I = zeros(N, N_p);
 

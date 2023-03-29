@@ -37,12 +37,15 @@ end
 function G = generate_time_dep_indices(basis_index, coefficients, type, time_grid)
 
     N_p = size(basis_index, 2);
-    N_quad = size(coefficients, 2);
+    N_t = size(coefficients, 2); N_quad = N_t -1;
 
     c2_tot = sum_over_bases(basis_index, coefficients, time_grid);
 
+    
+
     tot = sum(c2_tot);
-    tot_cum = cumsum(tot);
+    tot_quad = diff(tot,1)/2 + tot(1:end-1);
+    tot_cum = cumsum(tot_quad);
 
     G = zeros(N_p, N_quad);
 
@@ -56,7 +59,8 @@ function G = generate_time_dep_indices(basis_index, coefficients, type, time_gri
 
         c2_pk = c2_tot(filt, :);
         pk = sum(c2_pk);
-        pk_cum = cumsum(pk);
+        pk_quad = diff(pk,1)/2 + pk(1:end-1);
+        pk_cum = cumsum(pk_quad);
         G(k, 1:N_quad) = pk_cum./tot_cum;
     end
 end
@@ -70,7 +74,7 @@ function c2_tot = sum_over_bases(basis_index, coefficients, time_grid)
 
     c2 = coefficients .* coefficients;
     c2 = w .* c2;
-    c2_tot = c2 .* norm;
+    c2_tot = c2 .* norm;% .* norm;
 
 end
 

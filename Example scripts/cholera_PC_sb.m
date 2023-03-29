@@ -1,7 +1,7 @@
 clear;
 
 T = 250;
-dt = .05;%e-2;
+dt = .001;%e-2;
 N_quad = T/dt;
 
 N_pop = 10000;
@@ -27,17 +27,17 @@ tols = [tol_abs, tol_rel];
 
 %% generate realisations
 
-input_means = [bL, bH, kL, kH, b, X, Z, d, g];
+input_means = [bH, kL, X, Z, g];;
 input_ranges = 0.2.*input_means;
 
 N_p = length(input_means); grid_h = 0; N = 50;
 % 
 % [U, N] = general.generate_legendre_samples(grid_h, N_p);
-[U, N] = general.generate_legendre_samples(grid_h, N_p, N); 
+U = general.generate_legendre_samples(N_p, N); 
 I = general.generate_inputs(input_ranges, input_means, U);
 
 %% generate N realisations of f, and then centre f
-[t, fmk] = f_cholera(I, dt, T, ic, tols, N, 2);
+[fmk, t] = f_cholera(I, 0:dt:T, 2, 4);
 mean_process = sum(fmk)/N;
 fc = fmk - mean_process;  % should i be subtracting the mean process?
 
@@ -51,28 +51,28 @@ N_ord = 3;
 
 
 %% check approximations
-y = PCE_methods.generate_approximation(proj_matrix, coefficients);
-yp = PCE_methods.generate_approximation(proj_matrix, coefficients, sum(basis_index, 2) == 0);
-
-figure(1);
-[foo, bar] = f_cholera(mean(I), dt, T, ic, tols, 1, 2);
-plot(t, y + mean_process); hold on;
-plot(foo, bar); plot(t, yp + mean_process); plot(t, min(fmk));
-plot(t, max(fmk)); hold off;
+% y = PCE_methods.generate_approximation(proj_matrix, coefficients);
+% yp = PCE_methods.generate_approximation(proj_matrix, coefficients, sum(basis_index, 2) == 0);
+% 
+% figure(1);
+% [foo, bar] = f_cholera(mean(I), dt, T, ic, tols, 1, 2);
+% plot(t, y + mean_process); hold on;
+% plot(foo, bar); plot(t, yp + mean_process); plot(t, min(fmk));
+% plot(t, max(fmk)); hold off;
 
 %% calculate sensitivity indices
-G_tot_td = PCE_methods.calculate_sensitivity_indices(basis_index, coefficients, true, 'total', dt);
-G_tot_pw = PCE_methods.calculate_sensitivity_indices(basis_index, coefficients, false, 'total', dt);
+G_tot_td = PCE_methods.calculate_sensitivity_indices(basis_index, coefficients, true, 'total', 0:dt:T);
+G_tot_pw = PCE_methods.calculate_sensitivity_indices(basis_index, coefficients, false, 'total', 0:dt:T);
 
-G_main_td = PCE_methods.calculate_sensitivity_indices(basis_index, coefficients, true, 'main', dt);
-G_main_pw = PCE_methods.calculate_sensitivity_indices(basis_index, coefficients, false, 'main', dt);
+G_main_td = PCE_methods.calculate_sensitivity_indices(basis_index, coefficients, true, 'main', 0:dt:T);
+G_main_pw = PCE_methods.calculate_sensitivity_indices(basis_index, coefficients, false, 'main', 0:dt:T);
 
 % figure(2);
-% semilogx(0:dt:T, G_tot_pw);
+% semilogx(linspace(0,T,length(G_tot_pw)), G_tot_pw);
 
 figure(4);
-semilogx(0:dt:T, G_tot_td);
+loglog(linspace(0,T,length(G_tot_td)), G_tot_td);
 
 % figure(3);
-% semilogx(0:dt:T, G_main_pw); hold on;
-% semilogx(0:dt:T, G_main_td); hold off;
+% semilogx(linspace(0,T,length(G_main_pw)), G_main_pw); hold on;
+% semilogx(linspace(0,T,length(G_main_td)), G_main_td); hold off;

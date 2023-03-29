@@ -7,4 +7,5 @@ function c = calculate_PCE_coefficients(projection_matrix, function_evaluations)
     for tm = 1:N_quad
         c(:, tm) = projection_matrix*function_evaluations(:, tm);
     end
+
 end

@@ -3,7 +3,7 @@ function proj_matrix = generate_projection_matrix(basis_index, U)
     [N, N_p] = size(U);
     N_PC = size(basis_index, 1);
     
-    v = N_p/N;
+    v = 1/N;%N_p/N;
     proj_matrix = zeros(N_PC, N);
     
     for n = 1:N_PC
